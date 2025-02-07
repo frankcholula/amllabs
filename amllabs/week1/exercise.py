@@ -60,13 +60,39 @@ def timeit(method):
 def average_color_of_img(img_path: str, patch_size: int = 4):
     try:
         img = cv2.imread(img_path)
+        print(f"Image shape: {img.shape}")
         greyscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         print(f"Greyscale shape: {greyscale.shape}")
         patches = extract_patches_2d(greyscale, (patch_size, patch_size))
         print(f"Patches shape: {patches.shape}")
 
+
         @timeit
-        def process_img(greyscale):
+        def process_img_fast(greyscale):
+            h, w = greyscale.shape
+            means = np.mean(patches, axis=(1,2))
+            
+            # Print debug info
+            print(f"Original shape: {greyscale.shape}")
+            print(f"Patches shape: {patches.shape}")
+            print(f"Means shape: {means.shape}")
+            
+            # Calculate correct grid dimensions
+            grid_h = (h - patch_size + 1)
+            grid_w = (w - patch_size + 1)
+            print(f"Grid dimensions: {grid_h}x{grid_w}")
+            
+            # Reshape with correct dimensions
+            means = means.reshape(grid_h, grid_w)
+            
+            # Expand to original size
+            averaged = np.repeat(np.repeat(means, patch_size, axis=0), patch_size, axis=1)
+            
+            # Display
+            combined = np.hstack((greyscale[:averaged.shape[0], :averaged.shape[1]], averaged))
+            
+        @timeit
+        def process_img_slow(greyscale):
             h, w = greyscale.shape
             averaged = np.zeros_like(greyscale)
             for i in range(0, h - patch_size + 1, patch_size):
@@ -75,13 +101,13 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
                     averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
             return averaged
         
-        averaged = process_img(greyscale)
-        combined = np.hstack((greyscale, averaged))
+        averaged = process_img_fast(greyscale)
+        # combined = np.hstack((greyscale, averaged))
 
         # Displays the image
-        cv2.imshow("Original vs. Averaged", combined)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.imshow("Original vs. Averaged", combined)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
     except Exception as e:
         print(f"Error: {e}")
 
