@@ -57,6 +57,7 @@ def timeit(method):
 
 # Question 5
 
+
 def average_color_of_img(img_path: str, patch_size: int = 4):
     try:
         img = cv2.imread(img_path)
@@ -68,23 +69,21 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         def process_img_fast(greyscale):
             h, w = greyscale.shape
             patches = extract_patches_2d(greyscale, (patch_size, patch_size))
-            means = np.mean(patches, axis=(1,2))
+            averaged = np.mean(patches, axis=(1, 2))
+
             # Print debug info
             print(f"Original shape: {greyscale.shape}")
             print(f"Patches shape: {patches.shape}")
-            print(f"Means shape: {means.shape}")
-            
+            print(f"Means shape: {averaged.shape}")
+
             # Calculate correct grid dimensions
-            grid_h = (h - patch_size + 1)
-            grid_w = (w - patch_size + 1)
+            grid_h = h - patch_size + 1
+            grid_w = w - patch_size + 1
             print(f"Grid dimensions: {grid_h}x{grid_w}")
-            
-            # Reshape with correct dimensions
-            means = means.reshape(grid_h, grid_w)
-            
-            # Expand to original size
-            return means
-            
+
+            averaged = averaged.reshape(grid_h, grid_w)
+            return averaged
+
         @timeit
         def process_img_slow(greyscale):
             h, w = greyscale.shape
@@ -94,7 +93,7 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
                     patch = greyscale[i : i + patch_size, j : j + patch_size]
                     averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
             return averaged
-        
+
         averaged = process_img_fast(greyscale)
 
         # Displays the image
@@ -109,20 +108,20 @@ if __name__ == "__main__":
     # Exercise 5
     average_color_of_img("./surrey.png")
 
-    # Exercise 4
-    visualize_sine_cosine()
+    # # Exercise 4
+    # visualize_sine_cosine()
 
-    # Exercise 3
-    arr = np.array([12, 34, 56, 78, 90])
-    threshold = 50
-    replacement = -1
-    print(f"Array before replacement: {arr}")
-    arr = replace_elements_greater_than(arr, threshold, replacement)
-    print(f"Array after replacement: {arr}")
+    # # Exercise 3
+    # arr = np.array([12, 34, 56, 78, 90])
+    # threshold = 50
+    # replacement = -1
+    # print(f"Array before replacement: {arr}")
+    # arr = replace_elements_greater_than(arr, threshold, replacement)
+    # print(f"Array after replacement: {arr}")
 
-    # Exercise 2
-    rect = Retangle(5, 10)
-    print(f"Area of rectangle: {rect.get_area()}")
+    # # Exercise 2
+    # rect = Retangle(5, 10)
+    # print(f"Area of rectangle: {rect.get_area()}")
 
-    # Exercise 1
-    print(f"Sum of numbers: {sum_of_numbers()}")
+    # # Exercise 1
+    # print(f"Sum of numbers: {sum_of_numbers()}")
