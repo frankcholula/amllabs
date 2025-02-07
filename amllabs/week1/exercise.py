@@ -74,6 +74,7 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
                     patch = greyscale[i : i + patch_size, j : j + patch_size]
                     averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
             return averaged
+        
         averaged = process_img(greyscale)
         combined = np.hstack((greyscale, averaged))
 
