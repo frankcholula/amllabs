@@ -94,10 +94,13 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
                     averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
             return averaged
 
-        averaged = process_img_fast(greyscale)
+        averaged_fast = process_img_fast(greyscale)
+        averaged_slow = process_img_slow(greyscale)
 
         # Displays the image
-        cv2.imshow("Averaged", averaged)
+        cv2.imshow("Averaged Fast", averaged_fast)
+        cv2.waitKey(0)
+        cv2.imshow("Averaged Slow", averaged_slow)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     except Exception as e:
