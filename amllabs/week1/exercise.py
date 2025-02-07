@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.image import extract_patches_2d
 import cv2
-import sklearn.preprocessing
+import time
 
 
 # Question 1
@@ -44,7 +44,19 @@ def visualize_sine_cosine():
     plt.show()
 
 
+def timeit(method):
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+        print(f"{method.__name__} took {te - ts:2.4f} sec")
+        return result
+
+    return timed
+
+
 # Question 5
+
 def average_color_of_img(img_path: str, patch_size: int = 4):
     try:
         img = cv2.imread(img_path)
@@ -53,14 +65,16 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         patches = extract_patches_2d(greyscale, (patch_size, patch_size))
         print(f"Patches shape: {patches.shape}")
 
-        # Average the patches
-        h, w = greyscale.shape
-        averaged = np.zeros_like(greyscale)
-        for i in range(0, h - patch_size + 1, patch_size):
-            for j in range(0, w - patch_size + 1, patch_size):
-                patch = greyscale[i : i + patch_size, j : j + patch_size]
-                averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
-
+        @timeit
+        def process_img(greyscale):
+            h, w = greyscale.shape
+            averaged = np.zeros_like(greyscale)
+            for i in range(0, h - patch_size + 1, patch_size):
+                for j in range(0, w - patch_size + 1, patch_size):
+                    patch = greyscale[i : i + patch_size, j : j + patch_size]
+                    averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
+            return averaged
+        averaged = process_img(greyscale)
         combined = np.hstack((greyscale, averaged))
 
         # Displays the image
