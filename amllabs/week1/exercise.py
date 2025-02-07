@@ -76,19 +76,19 @@ if __name__ == "__main__":
     average_color_of_img("./surrey.png")
 
     # Exercise 4
-    # visualize_sine_cosine()
+    visualize_sine_cosine()
 
-    # # Exercise 3
-    # arr = np.array([12, 34, 56, 78, 90])
-    # threshold = 50
-    # replacement = -1
-    # print(f"Array before replacement: {arr}")
-    # arr = replace_elements_greater_than(arr, threshold, replacement)
-    # print(f"Array after replacement: {arr}")
+    # Exercise 3
+    arr = np.array([12, 34, 56, 78, 90])
+    threshold = 50
+    replacement = -1
+    print(f"Array before replacement: {arr}")
+    arr = replace_elements_greater_than(arr, threshold, replacement)
+    print(f"Array after replacement: {arr}")
 
-    # # Exercise 2
-    # rect = Retangle(5, 10)
-    # print(f"Area of rectangle: {rect.get_area()}")
+    # Exercise 2
+    rect = Retangle(5, 10)
+    print(f"Area of rectangle: {rect.get_area()}")
 
-    # # Exercise 1
-    # print(f"Sum of numbers: {sum_of_numbers()}")
+    # Exercise 1
+    print(f"Sum of numbers: {sum_of_numbers()}")
