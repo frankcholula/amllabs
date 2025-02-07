@@ -63,15 +63,12 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         print(f"Image shape: {img.shape}")
         greyscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         print(f"Greyscale shape: {greyscale.shape}")
-        patches = extract_patches_2d(greyscale, (patch_size, patch_size))
-        print(f"Patches shape: {patches.shape}")
-
 
         @timeit
         def process_img_fast(greyscale):
             h, w = greyscale.shape
+            patches = extract_patches_2d(greyscale, (patch_size, patch_size))
             means = np.mean(patches, axis=(1,2))
-            
             # Print debug info
             print(f"Original shape: {greyscale.shape}")
             print(f"Patches shape: {patches.shape}")
@@ -86,10 +83,7 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
             means = means.reshape(grid_h, grid_w)
             
             # Expand to original size
-            averaged = np.repeat(np.repeat(means, patch_size, axis=0), patch_size, axis=1)
-            
-            # Display
-            combined = np.hstack((greyscale[:averaged.shape[0], :averaged.shape[1]], averaged))
+            return means
             
         @timeit
         def process_img_slow(greyscale):
@@ -102,12 +96,11 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
             return averaged
         
         averaged = process_img_fast(greyscale)
-        # combined = np.hstack((greyscale, averaged))
 
         # Displays the image
-        # cv2.imshow("Original vs. Averaged", combined)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+        cv2.imshow("Averaged", averaged)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     except Exception as e:
         print(f"Error: {e}")
 
