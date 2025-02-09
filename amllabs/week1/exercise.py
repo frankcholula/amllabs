@@ -6,13 +6,15 @@ from sklearn.feature_extraction.image import (
 )
 import cv2
 import time
+import logging
 
+logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 # Question 1
 def sum_of_numbers():
     number = int(input("Enter a positive number: "))
     if number < 0:
-        print("Please enter a positive number")
+        logging.info("Please enter a positive number")
     sum = 0  # Initialize sum variable
     for i in range(1, number + 1):
         sum += i  # Add i instead of 1
@@ -52,7 +54,7 @@ def timeit(method):
         ts = time.time()
         result = method(*args, **kw)
         te = time.time()
-        print(f"{method.__name__} took {te - ts:2.4f} sec")
+        logging.info(f"{method.__name__} took {te - ts:2.4f} sec")
         return result
 
     return timed
@@ -62,14 +64,14 @@ def timeit(method):
 @timeit
 def process_img_sklearn(greyscale: np.array, patch_size: int = 4):
     patches = extract_patches_2d(greyscale, (patch_size, patch_size))
-    print(f"Patches shape: {patches.shape}")
+    logging.debug(f"Patches shape: {patches.shape}")
     patch_means = patches.mean(axis=(1, 2))
     # use broadcasting
     new_patches = np.full(
         (patches.shape[0], patch_size, patch_size),
         patch_means[:, np.newaxis, np.newaxis],
     )
-    print(f"New patches shape: {new_patches.shape}")
+    logging.debug(f"New patches shape: {new_patches.shape}")
     averaged = reconstruct_from_patches_2d(new_patches, greyscale.shape)
     return averaged
 
@@ -103,9 +105,9 @@ def process_img_fast(greyscale: np.array, patch_size: int = 4):
 def average_color_of_img(img_path: str, patch_size: int = 4):
     try:
         img = cv2.imread(img_path)
-        print(f"Image shape: {img.shape}")
+        logging.debug(f"Image shape: {img.shape}")
         greyscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        print(f"Greyscale shape: {greyscale.shape}")
+        logging.debug(f"Greyscale shape: {greyscale.shape}")
         averaged_fast = process_img_sklearn(greyscale, patch_size)
         averaged_slow = process_img_slow(greyscale, patch_size)
         averaged_sklearn = process_img_fast(greyscale, patch_size)
@@ -123,7 +125,7 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         plt.show()
 
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
 
 
 if __name__ == "__main__":
@@ -137,13 +139,13 @@ if __name__ == "__main__":
     arr = np.array([12, 34, 56, 78, 90])
     threshold = 50
     replacement = -1
-    print(f"Array before replacement: {arr}")
+    logging.info(f"Array before replacement: {arr}")
     arr = replace_elements_greater_than(arr, threshold, replacement)
-    print(f"Array after replacement: {arr}")
+    logging.info(f"Array after replacement: {arr}")
 
     # Exercise 2
     rect = Retangle(5, 10)
-    print(f"Area of rectangle: {rect.get_area()}")
+    logging.info(f"Area of rectangle: {rect.get_area()}")
 
     # Exercise 1
-    print(f"Sum of numbers: {sum_of_numbers()}")
+    logging.info(f"Sum of numbers: {sum_of_numbers()}")
