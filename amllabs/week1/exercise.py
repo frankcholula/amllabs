@@ -56,6 +56,19 @@ def timeit(method):
 
 
 # Question 5
+@timeit
+def process_img_slow(greyscale: np.array, patch_size: int = 4):
+    h, w = greyscale.shape
+    averaged = np.zeros_like(greyscale)
+    for i in range(0, h - patch_size + 1, patch_size):
+        for j in range(0, w - patch_size + 1, patch_size):
+            patch = greyscale[i : i + patch_size, j : j + patch_size]
+            averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
+    return averaged
+
+
+def process_img_fast(greyscale: np.array, patch_size: int = 4):
+    pass
 
 
 def average_color_of_img(img_path: str, patch_size: int = 4):
@@ -64,45 +77,11 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         print(f"Image shape: {img.shape}")
         greyscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         print(f"Greyscale shape: {greyscale.shape}")
-
-        @timeit
-        def process_img_fast(greyscale):
-            h, w = greyscale.shape
-            patches = extract_patches_2d(greyscale, (patch_size, patch_size))
-            averaged = np.mean(patches, axis=(1, 2))
-
-            # Print debug info
-            print(f"Original shape: {greyscale.shape}")
-            print(f"Patches shape: {patches.shape}")
-            print(f"Means shape: {averaged.shape}")
-
-            # Calculate correct grid dimensions
-            grid_h = h - patch_size + 1
-            grid_w = w - patch_size + 1
-            print(f"Grid dimensions: {grid_h}x{grid_w}")
-
-            averaged = averaged.reshape(grid_h, grid_w)
-            return averaged
-
-        @timeit
-        def process_img_slow(greyscale):
-            h, w = greyscale.shape
-            averaged = np.zeros_like(greyscale)
-            for i in range(0, h - patch_size + 1, patch_size):
-                for j in range(0, w - patch_size + 1, patch_size):
-                    patch = greyscale[i : i + patch_size, j : j + patch_size]
-                    averaged[i : i + patch_size, j : j + patch_size] = np.mean(patch)
-            return averaged
-
-        averaged_fast = process_img_fast(greyscale)
-        averaged_slow = process_img_slow(greyscale)
-
-        # Displays the image
-        cv2.imshow("Averaged Fast", averaged_fast)
-        cv2.waitKey(0)
+        averaged_slow = process_img_slow(greyscale, patch_size)
         cv2.imshow("Averaged Slow", averaged_slow)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
     except Exception as e:
         print(f"Error: {e}")
 
