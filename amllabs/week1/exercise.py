@@ -60,6 +60,17 @@ def timeit(method):
 
 # Question 5
 @timeit
+def process_img_sklearn(greyscale: np.array, patch_size: int = 4):
+    patches = extract_patches_2d(greyscale, (patch_size, patch_size))
+    print(f"Patches shape: {patches.shape}")
+    patch_means = patches.mean(axis=(1, 2))
+    # use broadcasting
+    new_patches = np.full((patches.shape[0], patch_size, patch_size), patch_means[:, np.newaxis, np.newaxis])
+    print(f"New patches shape: {new_patches.shape}")
+    averaged = reconstruct_from_patches_2d(new_patches, greyscale.shape)
+    return averaged
+
+@timeit
 def process_img_slow(greyscale: np.array, patch_size: int = 4):
     h, w = greyscale.shape
     averaged = np.zeros_like(greyscale)
@@ -91,16 +102,19 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         print(f"Image shape: {img.shape}")
         greyscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         print(f"Greyscale shape: {greyscale.shape}")
-        averaged_fast = process_img_fast(greyscale, patch_size)
+        averaged_fast = process_img_sklearn(greyscale, patch_size)
         averaged_slow = process_img_slow(greyscale, patch_size)
+        averaged_sklearn = process_img_fast(greyscale, patch_size)
         
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+        fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize=(20, 5))
         ax1.imshow(greyscale, cmap='gray')
         ax1.set_title('Original')
         ax2.imshow(averaged_fast, cmap='gray')
         ax2.set_title('Fast Processing')
         ax3.imshow(averaged_slow, cmap='gray')
         ax3.set_title('Slow Processing')
+        ax4.imshow(averaged_sklearn, cmap='gray')
+        ax4.set_title('Sklearn Processing (Slowest)')
         plt.tight_layout()
         plt.show()
 
