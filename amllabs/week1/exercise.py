@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.feature_extraction.image import extract_patches_2d
+from sklearn.feature_extraction.image import (
+    extract_patches_2d,
+    reconstruct_from_patches_2d,
+)
 import cv2
 import time
 
@@ -67,8 +70,19 @@ def process_img_slow(greyscale: np.array, patch_size: int = 4):
     return averaged
 
 
+@timeit
 def process_img_fast(greyscale: np.array, patch_size: int = 4):
-    pass
+    h, w = greyscale.shape
+    new_h = h - (h % patch_size)
+    new_w = w - (w % patch_size)
+    greyscale = greyscale[:new_h, :new_w]
+    patches = greyscale.reshape(
+        new_h // patch_size, patch_size, new_w // patch_size, patch_size
+    )
+    patch_means = patches.mean(axis=(1, 3))
+    # Expand the reduced array back to the original size
+    averaged = np.repeat(np.repeat(patch_means, patch_size, axis=0), patch_size, axis=1)
+    return averaged
 
 
 def average_color_of_img(img_path: str, patch_size: int = 4):
@@ -77,10 +91,18 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         print(f"Image shape: {img.shape}")
         greyscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         print(f"Greyscale shape: {greyscale.shape}")
+        averaged_fast = process_img_fast(greyscale, patch_size)
         averaged_slow = process_img_slow(greyscale, patch_size)
-        cv2.imshow("Averaged Slow", averaged_slow)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+        ax1.imshow(greyscale, cmap='gray')
+        ax1.set_title('Original')
+        ax2.imshow(averaged_fast, cmap='gray')
+        ax2.set_title('Fast Processing')
+        ax3.imshow(averaged_slow, cmap='gray')
+        ax3.set_title('Slow Processing')
+        plt.tight_layout()
+        plt.show()
 
     except Exception as e:
         print(f"Error: {e}")
