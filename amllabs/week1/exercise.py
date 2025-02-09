@@ -65,10 +65,14 @@ def process_img_sklearn(greyscale: np.array, patch_size: int = 4):
     print(f"Patches shape: {patches.shape}")
     patch_means = patches.mean(axis=(1, 2))
     # use broadcasting
-    new_patches = np.full((patches.shape[0], patch_size, patch_size), patch_means[:, np.newaxis, np.newaxis])
+    new_patches = np.full(
+        (patches.shape[0], patch_size, patch_size),
+        patch_means[:, np.newaxis, np.newaxis],
+    )
     print(f"New patches shape: {new_patches.shape}")
     averaged = reconstruct_from_patches_2d(new_patches, greyscale.shape)
     return averaged
+
 
 @timeit
 def process_img_slow(greyscale: np.array, patch_size: int = 4):
@@ -105,16 +109,16 @@ def average_color_of_img(img_path: str, patch_size: int = 4):
         averaged_fast = process_img_sklearn(greyscale, patch_size)
         averaged_slow = process_img_slow(greyscale, patch_size)
         averaged_sklearn = process_img_fast(greyscale, patch_size)
-        
+
         fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize=(20, 5))
-        ax1.imshow(greyscale, cmap='gray')
-        ax1.set_title('Original')
-        ax2.imshow(averaged_fast, cmap='gray')
-        ax2.set_title('Fast Processing')
-        ax3.imshow(averaged_slow, cmap='gray')
-        ax3.set_title('Slow Processing')
-        ax4.imshow(averaged_sklearn, cmap='gray')
-        ax4.set_title('Sklearn Processing (Slowest)')
+        ax1.imshow(greyscale, cmap="gray")
+        ax1.set_title("Original")
+        ax2.imshow(averaged_fast, cmap="gray")
+        ax2.set_title("Fast Processing")
+        ax3.imshow(averaged_slow, cmap="gray")
+        ax3.set_title("Slow Processing")
+        ax4.imshow(averaged_sklearn, cmap="gray")
+        ax4.set_title("Sklearn Processing (Slowest)")
         plt.tight_layout()
         plt.show()
 
@@ -126,20 +130,20 @@ if __name__ == "__main__":
     # Exercise 5
     average_color_of_img("./surrey.png")
 
-    # # Exercise 4
-    # visualize_sine_cosine()
+    # Exercise 4
+    visualize_sine_cosine()
 
-    # # Exercise 3
-    # arr = np.array([12, 34, 56, 78, 90])
-    # threshold = 50
-    # replacement = -1
-    # print(f"Array before replacement: {arr}")
-    # arr = replace_elements_greater_than(arr, threshold, replacement)
-    # print(f"Array after replacement: {arr}")
+    # Exercise 3
+    arr = np.array([12, 34, 56, 78, 90])
+    threshold = 50
+    replacement = -1
+    print(f"Array before replacement: {arr}")
+    arr = replace_elements_greater_than(arr, threshold, replacement)
+    print(f"Array after replacement: {arr}")
 
-    # # Exercise 2
-    # rect = Retangle(5, 10)
-    # print(f"Area of rectangle: {rect.get_area()}")
+    # Exercise 2
+    rect = Retangle(5, 10)
+    print(f"Area of rectangle: {rect.get_area()}")
 
-    # # Exercise 1
-    # print(f"Sum of numbers: {sum_of_numbers()}")
+    # Exercise 1
+    print(f"Sum of numbers: {sum_of_numbers()}")
