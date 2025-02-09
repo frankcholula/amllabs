@@ -8,7 +8,8 @@ import cv2
 import time
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+
 
 # Question 1
 def sum_of_numbers():
