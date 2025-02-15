@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "amllab"
+name = "amllabs"
 version = "0.1.0"
 description = "labs for University of Surrey's Applied Machine Learning module"
 authors = ["frankcholula <lu.phrank@gmail.com>"]
