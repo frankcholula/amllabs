@@ -11,7 +11,9 @@ amllabs
 ├── LICENSE
 ├── README.md
 ├── amllabs
-│   └── week1
+│   ├── week1
+│   ├── week2
+│   └── week3
 ├── poetry.lock
 └── pyproject.toml
 ```
