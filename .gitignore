@@ -172,7 +172,11 @@ cython_debug/
 
 # Mac Files
 .DS_Store
+
+# Datasets
 data/
 runs/
 dataset/
 tu_berlin/
+KTH_pickle/
+*.zip
