@@ -14,7 +14,9 @@ amllabs
 │   ├── week1
 │   ├── week2
 │   ├── week3
-│   └── week4
+│   ├── week4
+│   ├── week5
+│   └── week6
 ├── poetry.lock
 └── pyproject.toml
 ```
